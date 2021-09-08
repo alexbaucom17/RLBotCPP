@@ -47,6 +47,7 @@ public:
     memcpy(data, flatbuffercontainer.data, size);
 
     flatbuffer = flatbuffers::GetRoot<type>(data);
+    return *this;
   }
 
   FlatbufferContainer<type>
@@ -58,9 +59,19 @@ public:
 
     flatbuffercontainer.data = nullptr;
     flatbuffercontainer.size = 0;
+    return *this;
   }
 
   const type *getRoot() const { return flatbuffer; }
   const type *operator->() const { return flatbuffer; }
+  std::vector<uint8_t> getBufferCopy() const {
+    std::vector<uint8_t> vec;
+    vec.reserve(size);
+    for (int i = 0; i < size; i++) {
+      uint8_t d = static_cast<uint8_t>(*(data+i));
+      vec.push_back(d);
+    }
+    return vec;
+  }
 };
 } // namespace rlbot
