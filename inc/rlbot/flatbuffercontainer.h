@@ -12,10 +12,25 @@ private:
   const type *flatbuffer;
 
 public:
+
+  FlatbufferContainer() {
+    size = 0;
+    data = nullptr;
+    flatbuffer = nullptr;
+  }
+
   FlatbufferContainer(ByteBuffer buffer) {
     size = buffer.size;
     data = (char *)malloc(size);
     memcpy(data, buffer.ptr, size);
+
+    flatbuffer = flatbuffers::GetRoot<type>(data);
+  }
+
+  FlatbufferContainer(const flatbuffers::Vector<unsigned char>* buffer_data) {
+    size = buffer_data->size();
+    data = (char *)malloc(size);
+    memcpy(data, buffer_data->data(), size);
 
     flatbuffer = flatbuffers::GetRoot<type>(data);
   }
